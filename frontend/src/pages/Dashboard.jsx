@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Navbar from "../components/navbar";
 import ApplicationTable from "../components/ApplicationTable";
 import ApplicationForm from "../components/ApplicationForm";
+import { API_BASE_URL } from '../config';
 
 export default function Dashboard({ user, onLogout, currentView, onNavigate }) {
   const [showForm, setShowForm] = useState(false);
@@ -15,7 +16,7 @@ export default function Dashboard({ user, onLogout, currentView, onNavigate }) {
 
   const addApplication = async (application) => {
     try {
-      const response = await fetch("http://localhost:8080/api/applications", {
+      const response = await fetch(`${API_BASE_URL}/api/applications`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(application),
@@ -29,7 +30,7 @@ export default function Dashboard({ user, onLogout, currentView, onNavigate }) {
 
   const deleteApplication = async (id) => {
     try {
-      await fetch(`http://localhost:8080/api/applications/${id}`, { method: "DELETE" });
+      await fetch(`${API_BASE_URL}/api/applications/${id}`, { method: "DELETE" });
       setApplicationList((current) => current.filter((application) => application._id !== id));
     } catch (error) {
       console.error("Failed to delete application:", error);
@@ -43,7 +44,7 @@ export default function Dashboard({ user, onLogout, currentView, onNavigate }) {
 
   const updateApplication = async (updatedApplication) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/applications/${updatedApplication._id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/applications/${updatedApplication._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedApplication),
@@ -59,7 +60,7 @@ export default function Dashboard({ user, onLogout, currentView, onNavigate }) {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/applications")
+    fetch(`${API_BASE_URL}/api/applications`)
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {

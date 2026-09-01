@@ -3,6 +3,7 @@ import Dashboard from './pages/Dashboard.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Navbar from './components/navbar.jsx';
+import { API_BASE_URL } from './config.js';
 import './App.css';
 
 function App() {
@@ -10,7 +11,7 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/auth/me', { credentials: 'include' })
+    fetch(`${API_BASE_URL}/api/auth/me`, { credentials: 'include' })
       .then((res) => res.json())
       .then((data) => {
         if (data && data.user) {
@@ -22,7 +23,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:8080/api/auth/logout', { credentials: 'include' });
+      await fetch(`${API_BASE_URL}/api/auth/logout`, { credentials: 'include' });
       setUser(null);
       setCurrentView('login');
     } catch (err) {
