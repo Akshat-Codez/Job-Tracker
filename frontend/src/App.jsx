@@ -7,7 +7,7 @@ import { API_BASE_URL } from './config.js';
 import './App.css';
 
 function App() {
-  const [currentView, setCurrentView] = useState('signup');
+  const [currentView, setCurrentView] = useState('login');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -16,6 +16,7 @@ function App() {
       .then((data) => {
         if (data && data.user) {
           setUser(data.user);
+          setCurrentView('dashboard');
         }
       })
       .catch((err) => console.log('Auth check error:', err));
@@ -36,37 +37,42 @@ function App() {
     setCurrentView('dashboard');
   };
 
-  const handleRegisterSuccess = (userData) => {
-    setUser(userData);
+  const handleRegisterSuccess = () => {
     setCurrentView('login');
   };
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {currentView !== 'dashboard' && (
+      {(!user || currentView !== 'dashboard') && (
         <Navbar 
           currentView={currentView}
-          onNavigate={(view) => setCurrentView(view)}
+          onNavigate={(view) => {
+            if (!user && view === 'dashboard') {
+              setCurrentView('login');
+            } else {
+              setCurrentView(view);
+            }
+          }}
           user={user}
           onLogout={handleLogout}
         />
       )}
 
-      {currentView === 'signup' && (
+      {!user && currentView === 'signup' && (
         <Register
           onSwitchToLogin={() => setCurrentView('login')}
           onRegisterSuccess={handleRegisterSuccess}
         />
       )}
 
-      {currentView === 'login' && (
+      {!user && currentView !== 'signup' && (
         <Login
           onSwitchToRegister={() => setCurrentView('signup')}
           onLoginSuccess={handleLoginSuccess}
         />
       )}
 
-      {currentView === 'dashboard' && (
+      {user && currentView === 'dashboard' && (
         <Dashboard
           user={user}
           onLogout={handleLogout}

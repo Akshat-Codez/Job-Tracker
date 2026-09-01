@@ -3,9 +3,9 @@ import { API_BASE_URL } from '../config';
 
 export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
   const [formData, setFormData] = useState({
-    name: 'Jane Doe',
-    email: 'jane@example.com',
-    password: 'password123',
+    name: '',
+    email: '',
+    password: '',
   });
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
@@ -28,7 +28,7 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
 
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Backend URL returned HTML. Please ensure VITE_API_URL points to your Render backend web service URL.');
+        throw new Error('Backend URL returned HTML. Please verify VITE_API_URL in Render environment variables.');
       }
 
       const data = await response.json();
@@ -36,7 +36,7 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
         throw new Error(data.message || 'Registration failed');
       }
 
-      setMessage('Account created successfully! Redirecting...');
+      setMessage('Account created successfully! Please log in.');
       setTimeout(() => {
         if (onRegisterSuccess) {
           onRegisterSuccess(data.user);
@@ -77,7 +77,7 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name
+              Username
             </label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
@@ -90,7 +90,7 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
                 onChange={handleChange}
                 required
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Enter your full name"
+                placeholder="Enter username"
               />
             </div>
           </div>
@@ -110,7 +110,7 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
                 onChange={handleChange}
                 required
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Enter your email"
+                placeholder="Enter email address"
               />
             </div>
           </div>

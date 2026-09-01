@@ -3,8 +3,8 @@ import { API_BASE_URL } from '../config';
 
 export default function Login({ onSwitchToRegister, onLoginSuccess }) {
   const [formData, setFormData] = useState({
-    email: 'jane@example.com',
-    password: 'password123',
+    email: '',
+    password: '',
   });
   const [error, setError] = useState('');
 
@@ -25,7 +25,7 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
 
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Backend URL returned HTML. Please ensure VITE_API_URL points to your Render backend web service URL.');
+        throw new Error('Backend URL returned HTML. Please verify VITE_API_URL in Render environment variables.');
       }
 
       const data = await response.json();
