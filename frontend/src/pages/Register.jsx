@@ -26,6 +26,11 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
         body: JSON.stringify(formData),
       });
 
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Backend URL returned HTML. Please ensure VITE_API_URL points to your Render backend web service URL.');
+      }
+
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || 'Registration failed');
