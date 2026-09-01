@@ -19,6 +19,7 @@ export default function Dashboard({ user, onLogout, currentView, onNavigate }) {
       const response = await fetch(`${API_BASE_URL}/api/applications`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: 'include',
         body: JSON.stringify(application),
       });
       const newApplication = await response.json();
@@ -30,7 +31,10 @@ export default function Dashboard({ user, onLogout, currentView, onNavigate }) {
 
   const deleteApplication = async (id) => {
     try {
-      await fetch(`${API_BASE_URL}/api/applications/${id}`, { method: "DELETE" });
+      await fetch(`${API_BASE_URL}/api/applications/${id}`, {
+        method: "DELETE",
+        credentials: 'include',
+      });
       setApplicationList((current) => current.filter((application) => application._id !== id));
     } catch (error) {
       console.error("Failed to delete application:", error);
@@ -47,6 +51,7 @@ export default function Dashboard({ user, onLogout, currentView, onNavigate }) {
       const response = await fetch(`${API_BASE_URL}/api/applications/${updatedApplication._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: 'include',
         body: JSON.stringify(updatedApplication),
       });
       const updatedData = await response.json();
@@ -60,7 +65,7 @@ export default function Dashboard({ user, onLogout, currentView, onNavigate }) {
   };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/applications`)
+    fetch(`${API_BASE_URL}/api/applications`, { credentials: 'include' })
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -81,7 +86,9 @@ export default function Dashboard({ user, onLogout, currentView, onNavigate }) {
         user={user}
         onLogout={onLogout}
       />
-      <h1 className="font-semibold px-6 text-2xl font-sans mt-6 text-gray-800">Welcome Back 😊</h1>
+      <h1 className="font-semibold px-6 text-2xl font-sans mt-6 text-gray-800">
+        Welcome Back, {user?.name || 'User'} 👋
+      </h1>
       <p className="px-6 text-gray-600">Here is your job search overview</p>
       <hr className="my-4 border-gray-200" />
       

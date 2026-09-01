@@ -2,7 +2,8 @@ const Application = require("../models/Application");
 
 const getApplications = async (req, res) => {
   try {
-    const applications = await Application.find().sort({ createdAt: -1 });
+    const filter = req.user ? { user: req.user._id } : {};
+    const applications = await Application.find(filter).sort({ createdAt: -1 });
     res.json(applications);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch applications", error: error.message });
@@ -13,6 +14,7 @@ const createApplication = async (req, res) => {
   try {
     const { company, role, status, dateApplied, notes } = req.body;
     const application = await Application.create({
+      user: req.user ? req.user._id : null,
       company,
       role,
       status: status || "Applied",
@@ -28,8 +30,9 @@ const createApplication = async (req, res) => {
 const updateApplication = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedApplication = await Application.findByIdAndUpdate(
-      id,
+    const filter = req.user ? { _id: id, user: req.user._id } : { _id: id };
+    const updatedApplication = await Application.findOneAndUpdate(
+      filter,
       req.body,
       { new: true }
     );
@@ -45,7 +48,8 @@ const updateApplication = async (req, res) => {
 const deleteApplication = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedApplication = await Application.findByIdAndDelete(id);
+    const filter = req.user ? { _id: id, user: req.user._id } : { _id: id };
+    const deletedApplication = await Application.findOneAndDelete(filter);
     if (!deletedApplication) {
       return res.status(404).json({ message: "Application not found" });
     }
